@@ -25,7 +25,7 @@ jobs:
         restore-keys: |
           nuget-${{ matrix.os }}-
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
     - name: Test
@@ -62,7 +62,7 @@ jobs:
             nuget-${{ matrix.os }}-
             
       - name: Setup .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
