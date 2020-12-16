@@ -19,12 +19,12 @@ namespace test {
         }
 
         [Fact]
-        public void Test_GetSpan() {
+        public void Test_GetBytes() {
             for (var b = 0; b <= byte.MaxValue; b++) {
-                Assert.Equal(new byte[] {0xdb, 0x40, 0xdd, (byte) b}, new Ivs((byte) b).GetSpan().ToArray());
+                Assert.Equal(new byte[] {0xdb, 0x40, 0xdd, (byte) b}, new Ivs((byte) b).GetBytes());
             }
 
-            Assert.Throws<InvalidOperationException>(() => new Ivs(null).GetSpan());
+            Assert.Throws<InvalidOperationException>(() => new Ivs(null).GetBytes());
         }
     }
 }
