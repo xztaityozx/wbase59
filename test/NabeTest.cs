@@ -26,11 +26,16 @@ namespace test {
             };
 
             foreach (var (nabe,max,bytes) in data) {
-                for (byte i = 0; i < max; i++) {
-                    var n = new Nabe(nabe, i);
-                    var ivs = new Ivs(i);
+                Assert.Equal(bytes, new Nabe(nabe).GetSpan().ToArray());
 
-                    var expect = bytes.Concat(ivs.GetBytes()).ToArray();
+                for (byte i = 0; i < max+2; i++) {
+                    var n = new Nabe(nabe, i);
+                    if (i >= max) {
+                        Assert.Throws<InvalidNabeIvsException>(() => n.GetSpan());
+                        continue;
+                    }
+
+                    var expect = bytes.Concat(new Ivs(i).GetBytes()).ToArray();
                     var actual = n.GetSpan().ToArray();
 
                     Assert.Equal(expect, actual);

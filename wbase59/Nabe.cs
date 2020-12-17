@@ -54,7 +54,7 @@ namespace wbase59 {
         /// <exception cref="InvalidNabeIvsException">基底ナベとして取りえないIvsの値が指定されたときに投げられる</exception>
         /// <returns></returns>
         public Span<byte> GetSpan() {
-            if (Position is not null && Position > Max) throw new InvalidNabeIvsException(Base, Max, (byte) Position);
+            if (Position is not null && Position >= Max) throw new InvalidNabeIvsException(Base, Max, (byte) Position);
             
             ivs ??= new Ivs(Position);
             var bytes = ivs.IsEmpty ? BytesOfNabe[Base] : BytesOfNabe[Base].Concat(ivs.GetBytes()).ToArray();
