@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using wbase59;
+using Wbase59;
 
 namespace test {
     public class IvsTest {

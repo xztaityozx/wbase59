@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace wbase59 {
+namespace Wbase59 {
     public enum BaseNabe {
         辺,邉,邊
     }
@@ -31,6 +31,9 @@ namespace wbase59 {
         }
     }
 
+    /// <summary>
+    /// 一つのナベを表すレコード
+    /// </summary>
     public record Nabe(BaseNabe Base, byte? Position = null) {
         private static readonly Dictionary<BaseNabe, byte> MaxOfIvs = new() {
             [BaseNabe.辺] = 3,

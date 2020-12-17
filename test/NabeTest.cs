@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using wbase59;
+using Wbase59;
 using Xunit;
 
 namespace test {
