@@ -6,20 +6,24 @@ using System.IO;
 namespace Wbase59 {
     public class Wbase59Encoder{
         public static IEnumerable<Nabe> Encode(Stream stream) {
-            const byte max = 56;
+            const int max = 56;
 
-            using (stream) {
-                while (stream.CanRead) {
-                    var b = stream.ReadByte();
-                    var baseNabe = (BaseNabe) (b % 3);
-                    var flag = new Nabe(baseNabe);
-                    
-                    yield return flag;
+            using(stream) {
+                while(stream.Position < stream.Length) {
+                    var buff = new byte[2];
+                    var span = new Span<byte>(buff);
+
+                    stream.Read(span);
+
+                    var val = (uint)((span[0] << 8) + span[1]);
+                    var bn = (BaseNabe)(val % 3);
+
+                    yield return new Nabe(bn);
 
                     do {
-                        yield return Wbase59.Create((b % max));
-                        b /= max;
-                    } while (b >= max);
+                        yield return Wbase59.Create((int)(val % max));
+                        val /= max;
+                    } while(val >= max);
                 }
             }
         }

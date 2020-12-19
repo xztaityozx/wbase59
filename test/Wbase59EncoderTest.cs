@@ -9,25 +9,25 @@ namespace test {
         [Fact]
         public void Test_Encode() {
             var bytes = Enumerable.Range(0, byte.MaxValue).Select(b => (byte) b).ToArray();
-            var list = new List<Nabe>();
+            var expect = new List<Nabe>();
 
-            foreach (var b in bytes) {
-                var baseNabe = (BaseNabe) (b % 3);
-                var prefix = new Nabe(baseNabe);
-                list.Add(prefix);
+            for(var i = 0;i<bytes.Length; i+=2) {
+                var val = (uint)((bytes[i] << 8));
+                if(i+1 < bytes.Length) val |= bytes[i+1];
 
-                const byte max = 56; 
-                var value = b;
-                while (value >= max) {
-                    list.Add(Wbase59.Wbase59.Create((byte)(value % max)));
-                    value /= max;
-                }
+                expect.Add(new Nabe((BaseNabe)(val % 3)));
 
+                do {
+                    expect.Add(Wbase59.Wbase59.Create((int)(val % 56)));
+                    val/=56;
+                } while(val >= 56);
             }
 
-            var actual = Wbase59Encoder.Encode(new MemoryStream(bytes)).ToArray();
+            var ms = new MemoryStream(bytes);
+            ms.Position = 0;
+            var actual = Wbase59Encoder.Encode(ms).ToArray();
             
-            Assert.Equal(list,actual);
+            Assert.Equal(expect,actual);
         }
     }
 }
