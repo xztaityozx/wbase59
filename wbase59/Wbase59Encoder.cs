@@ -4,26 +4,29 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace Wbase59 {
-    public static class Wbase59Encoder {
-        public static IEnumerable<Nabe> Encode(Stream stream) {
-            const int max = 56;
+    public class Wbase59Encoder {
+        private readonly Stream stream;
+        public Wbase59Encoder(Stream stream) => this.stream = stream;
 
+        public IEnumerable<Nabe> Encode() {
             while (stream.Position < stream.Length) {
-                var buff = new byte[2];
-                var span = new Span<byte>(buff);
-
+                var buf = new byte[1];
+                var span = new Span<byte>(buf);
                 stream.Read(span);
 
-                var val = (uint) ((span[0] << 8) + span[1]);
-                var bn = (BaseNabe) (val % 3);
-
-                yield return new Nabe(bn);
+                var val = buf[0];
+                yield return new Nabe((BaseNabe) (val % 3));
 
                 do {
-                    yield return Wbase59.Create((int) (val % max));
-                    val /= max;
-                } while (val >= max);
+                    yield return Wbase59.Create(val % Max);
+                    val /= Max;
+                } while (val >= Max);
+
+                yield return Wbase59.Create(val);
             }
         }
+
+        private const int Max = 56;
+        private const int BitSize = 11;
     }
 }
