@@ -5,6 +5,26 @@ using Xunit;
 namespace test {
     public class NabeTest {
         [Fact]
+        public void Test_Parse() {
+            var data = new[] {
+                new byte[] {0x8F, 0xBA},
+                new byte[] {0x90, 0x89},
+                new byte[] {0x90, 0x8A},
+                new byte[] {0x8F, 0xBA, 0xdb, 0x40, 0xdd, 0x00},
+                new byte[] {0x90, 0x89, 0xdb, 0x40, 0xdd, 0x00},
+                new byte[] {0x90, 0x8A, 0xdb, 0x40, 0xdd, 0x00}
+            };
+
+            foreach (var b in data) {
+                Assert.NotNull(Nabe.Parse(b));
+            }
+
+
+            Assert.Throws<InvalidNabeFormatException>(() => Nabe.Parse(new byte[] {0x1}));
+            Assert.Throws<InvalidNabeFormatException>(() => Nabe.Parse(System.Array.Empty<byte>()));
+        }
+
+        [Fact]
         public void Test_Max() {
             var data = new[] {
                 new {nabe = new Nabe(BaseNabe.辺), expect = 3},
