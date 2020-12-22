@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Wbase59 {
     public static class Wbase59 {
         public static Nabe Create(int index) {
             var bn = index switch {
-                <= 0 => throw new ArgumentOutOfRangeException(nameof(index)),
+                < 0 => throw new ArgumentOutOfRangeException(nameof(index)),
                 <= 2 => BaseNabe.辺,
                 <= 23 => BaseNabe.邊,
                 <= 55 => BaseNabe.邉,
