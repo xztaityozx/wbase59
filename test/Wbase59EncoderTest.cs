@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Wbase59;
 using Xunit;
 
@@ -9,8 +10,7 @@ namespace test {
     public class Wbase59EncoderTest {
         [Fact]
         public void Test_Encode() {
-            var bytes = Enumerable.Range(byte.MinValue, byte.MaxValue).OrderBy(_ => Guid.NewGuid())
-                .Select(b => (byte) b).ToArray();
+            var bytes = Encoding.UTF8.GetBytes("あいうえお");
 
             using var ms = new MemoryStream(bytes);
             var expect = new List<Nabe>();

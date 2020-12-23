@@ -4,89 +4,54 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Wbase59 {
     public class Wbase59Decoder {
-        private readonly Stream stream;
+        private readonly StreamReader stream;
 
-        public Wbase59Decoder(Stream stream) => this.stream = stream;
+        public Wbase59Decoder(Stream stream) => this.stream = new StreamReader(stream);
 
         public IEnumerable<byte> Decode() {
-            var bitStream = new List<bool>();
-            while (stream.Position < stream.Length) {
-                var bn = GetFlagBaseNabe();
-                var section = GetSectionNabe();
+            var encoder = new UnicodeEncoding(true, false);
 
-                if (section % 3 != (int) bn) throw new ParityNabeCheckFailedException();
-
-                yield return (byte)section;
-            }
-
-        }
-
-        private BaseNabe GetFlagBaseNabe() {
-            if (!stream.CanRead) throw new IOException();
-            if (stream.Position >= stream.Length - 2) throw InvalidNabeFormatException.NotEnoughByteLength;
-
-            var buff = new byte[2];
-            var span = new Span<byte>(buff);
-
-            stream.Read(span);
-
-            return Nabe.Parse(span).Base;
-        }
-
-        private int GetSectionNabe() {
-            if (!stream.CanRead) throw new IOException();
-
+            var nextMod = 0;
             var stack = new Stack<int>();
 
-            while (stream.Position < stream.Length) {
-                var bn = GetFlagBaseNabe();
+            while (stream.Peek() > 0) {
+                for (var item = StringInfo.GetTextElementEnumerator(stream.ReadLine() ?? string.Empty);
+                    item.MoveNext();) {
+                    var bytes = encoder.GetBytes(item.GetTextElement());
 
-                var buf = new byte[4];
-                var span = new Span<byte>(buf);
-                stream.Read(span);
+                    var nextNabe = Nabe.Parse(bytes.AsSpan());
 
-                if (buf[0] == 0xdb && buf[1] == 0x40 && buf[2] == 0xdd) {
-                    stack.Push(bn switch {
-                        BaseNabe.辺 => buf[3],
-                        BaseNabe.邊 => buf[3] + 3,
-                        BaseNabe.邉 => buf[3] + 24,
-                        _ => throw new ArgumentException()
-                    });
-                }
-                else if (
-                    buf[0] == 0x8F && buf[1] == 0xBA ||
-                    buf[0] == 0x90 && buf[1] == 0x89 ||
-                    buf[0] == 0x90 && buf[1] == 0x8A
-                ) {
-                    
-                    Console.WriteLine($"extracted: {string.Join(",", stack)}");
-                    var cur = 0;
-                    while (stack.TryPop(out var top)) {
-                        cur = cur * 56 + top;
+                    if (nextNabe.Position is null) {
+                        if (stack.Any()) {
+                            yield return (byte) Aggregate(stack, nextMod);
+                        }
+
+                        nextMod = (int) nextNabe.Base;
                     }
-
-                    stream.Position -= 6;
-                    return cur;
-                }
-                else {
-                    throw new InvalidNabeFormatException(buf[0], buf[1]);
-                }
-            }
-
-            if (stack.Any()) {
-                var cur = 0;
-                while (stack.TryPop(out var top)) {
-                    cur = cur * 56 + top;
+                    else {
+                        stack.Push(Wbase59.ToByteValue(nextNabe));
+                    }
                 }
 
-                return cur;
+                if (!stack.Any()) continue;
+                yield return (byte) Aggregate(stack, nextMod);
             }
-            else {
-                throw new InvalidDataException();
+        }
+
+        private static int Aggregate(Stack<int> stack, int mod) {
+            var cur = 0;
+
+            while (stack.TryPop(out var val)) {
+                cur = cur * 56 + val;
             }
+
+            if (cur % 3 != mod) throw new ParityNabeCheckFailedException();
+
+            return cur;
         }
     }
 

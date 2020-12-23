@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Wbase59;
 using Xunit;
 using Xunit.Abstractions;
@@ -14,14 +15,15 @@ namespace test {
         
         [Fact]
         public void Test_Decode() {
-            var original = Enumerable.Range(0, byte.MaxValue).OrderBy(_ => Guid.NewGuid()).Select(b => (byte) b).ToArray();
-            using var ms = new MemoryStream(original);
+            var expect = "あいうえお";
+            var encoded = new Wbase59Encoder(new MemoryStream(Encoding.UTF8.GetBytes(expect))).Encode()
+                .SelectMany(n => n.GetSpan().ToArray()).ToArray();
 
-            var encoded = new Wbase59Encoder(ms).Encode().ToArray();
-            using var inStream = new MemoryStream(encoded.SelectMany(n => n.GetSpan().ToArray()).ToArray());
-            var actual = new Wbase59Decoder(inStream).Decode().ToArray();
+            var actual = new Wbase59Decoder(new MemoryStream(
+                    Encoding.Convert(new UnicodeEncoding(true, false), Encoding.UTF8, encoded)
+                )).Decode();
 
-            Assert.Equal(original, actual);
+            Assert.Equal(expect, Encoding.UTF8.GetString(actual.ToArray()));
         }
     }
 }
