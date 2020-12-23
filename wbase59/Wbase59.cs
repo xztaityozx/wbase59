@@ -18,5 +18,15 @@ namespace Wbase59 {
                 _ => throw new ArgumentOutOfRangeException(nameof(index))
             };
         }
+
+        public static int ToByteValue(Nabe nabe) {
+            if(nabe.Position is null) throw InvalidNabeFormatException.IsNotElementNabe;
+            return nabe.Base switch {
+                BaseNabe.辺 => (int) nabe.Position,
+                BaseNabe.邊 => (int) nabe.Position + 3,
+                BaseNabe.邉 => (int) nabe.Position + 24,
+                _ => throw new ArgumentNullException(nameof(nabe))
+            };
+        }
     }
 }
