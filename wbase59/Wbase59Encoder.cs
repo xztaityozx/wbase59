@@ -11,7 +11,7 @@ namespace Wbase59 {
 
         public IEnumerable<Nabe> Encode() {
             while (stream.Peek() > 0) {
-                foreach (var b in Encoding.UTF8.GetBytes(stream.ReadLine() ?? string.Empty)) {
+                foreach (var b in Encoding.UTF8.GetBytes(stream.ReadLine() + Environment.NewLine)) {
                     var val = b;
                     yield return new Nabe((BaseNabe) (val % 3));
 

@@ -11,7 +11,7 @@ namespace test {
     public class Wbase59DecoderTest {
         [Fact]
         public void Test_Decode() {
-            const string expect = "あいうえお";
+            var expect = "あいうえお" + Environment.NewLine;
             var encoded = new Wbase59Encoder(new MemoryStream(Encoding.UTF8.GetBytes(expect)), Encoding.UTF8).Encode()
                 .SelectMany(n => n.GetSpan().ToArray()).ToArray();
 

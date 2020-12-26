@@ -10,7 +10,7 @@ namespace test {
     public class Wbase59EncoderTest {
         [Fact]
         public void Test_Encode() {
-            var bytes = Encoding.UTF8.GetBytes("あいうえお");
+            var bytes = Encoding.UTF8.GetBytes("あいうえお"+Environment.NewLine);
 
             using var ms = new MemoryStream(bytes);
             var expect = new List<Nabe>();
