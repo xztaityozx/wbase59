@@ -59,6 +59,12 @@ namespace Wbase59 {
             [BaseNabe.邊] = new byte[] { 0x90, 0x8A },
         };
 
+        /// <summary>
+        /// バイト列からナベをパースして返す
+        /// </summary>
+        /// <param name="span"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidNabeFormatException">ナベとして正しくないバイト列が与えられたとき投げられる</exception>
         public static Nabe Parse(Span<byte> span) {
             var bytes = span.ToArray();
             if (bytes.Length != 2 && bytes.Length != 6) throw new InvalidNabeFormatException(bytes.Length);
@@ -115,7 +121,5 @@ namespace Wbase59 {
         private InvalidNabeFormatException(string msg):base(msg){}
 
         public static InvalidNabeFormatException IsNotElementNabe => new("基底ナベをフラグ以外にできません");
-
-        public static InvalidNabeFormatException NotEnoughByteLength => new("ナベストリーム解析中にバイト列が不足しました");
     }
 }
