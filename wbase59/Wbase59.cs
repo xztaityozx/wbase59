@@ -2,7 +2,7 @@
 
 namespace Wbase59 {
     public static class Wbase59 {
-        public static Nabe Create(int index) {
+        public static Nabe ToNabe(int index) {
             var bn = index switch {
                 < 0 => throw new ArgumentOutOfRangeException(nameof(index)),
                 <= 2 => BaseNabe.辺,
@@ -19,7 +19,7 @@ namespace Wbase59 {
             };
         }
 
-        public static int ToByteValue(Nabe nabe) {
+        public static int ToValue(Nabe nabe) {
             if(nabe.Position is null) throw InvalidNabeFormatException.IsNotElementNabe;
             return nabe.Base switch {
                 BaseNabe.辺 => (int) nabe.Position,
