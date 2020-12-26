@@ -6,8 +6,8 @@ namespace test {
     public class Wbase59Test {
         [Fact]
         public void Test_Create_ThrowsException() {
-            Assert.Throws<ArgumentOutOfRangeException>(() => Wbase59.Wbase59.Create(56));
-            Assert.Throws<ArgumentOutOfRangeException>(() => Wbase59.Wbase59.Create(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => Wbase59.Wbase59.ToNabe(56));
+            Assert.Throws<ArgumentOutOfRangeException>(() => Wbase59.Wbase59.ToNabe(-1));
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace test {
             };
 
             foreach (var (val, bn) in data) {
-                var actual = Wbase59.Wbase59.Create(val);
+                var actual = Wbase59.Wbase59.ToNabe(val);
                 var expect = new Nabe(bn, (byte) (val - bn switch {
                     BaseNabe.辺 => 0,
                     BaseNabe.邉 => 24,

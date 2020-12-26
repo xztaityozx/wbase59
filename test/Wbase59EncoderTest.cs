@@ -19,14 +19,14 @@ namespace test {
                 var val = b;
                 expect.Add(new Nabe((BaseNabe) (val % 3)));
                 do {
-                    expect.Add(Wbase59.Wbase59.Create(val % 56));
+                    expect.Add(Wbase59.Wbase59.ToNabe(val % 56));
                     val /= 56;
                 } while (val >= 56);
 
-                expect.Add(Wbase59.Wbase59.Create(val));
+                expect.Add(Wbase59.Wbase59.ToNabe(val));
             }
 
-            var actual = new Wbase59Encoder(ms).Encode();
+            var actual = new Wbase59Encoder(ms, Encoding.UTF8).Encode();
             
             Assert.Equal(expect, actual);
         }
