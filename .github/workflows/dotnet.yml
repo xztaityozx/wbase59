@@ -67,7 +67,7 @@ jobs:
       - name: dotnet publish
         working-directory: ./wbase59
         run: |
-          dotnet publish -c Release -r ${{ steps.vars.outputs.runtime_id }} --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.vars.outputs.version }} -o ${{ steps.vars.outputs.runtime_id }}
+          dotnet publish -c Release -r ${{ steps.vars.outputs.runtime_id }} --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.vars.outputs.version }} -o ${{ steps.vars.outputs.runtime_id }} wbase59.csproj wbase59.csproj
       
       - name: Upload build result
         uses: actions/upload-artifact@v2.2.1
